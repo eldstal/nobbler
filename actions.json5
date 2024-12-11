@@ -1,0 +1,37 @@
+[
+  {
+    /* Use this in a configuration */
+    "name": "debug",
+
+    /*
+     * This placeholder, if it exists, will be
+     * replaced with the actual knob value
+     * in the command or message
+     * by default, it's {value}
+     */
+    "placeholder": "{value}",
+
+
+    /*
+     * If present, the value from the knob will be
+     * re-scaled to fit in this range (inclusive)
+     * By default, no re-scaling is performed
+     * {value} will be the value from the knob.
+     */
+    "scaling": [ 0, 100 ],
+
+    /*
+     * This determines what happens.
+     * Specify one or more
+     */
+     "actions": {
+        "log": {
+            "message": "The value changed. It's {value} now."
+         },
+
+        "command": {
+            "command": "echo '{value}' >> /tmp/knob_values.txt"
+        }
+     }
+  }
+]

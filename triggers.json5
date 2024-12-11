@@ -1,0 +1,19 @@
+[
+  {
+
+    /* If specified, this only applies to the named knob */
+    "knob": "lefty",
+
+    /* Only activates if the current config is "volume" */
+    "filter": {
+      "config": "volume"
+    },
+
+    /* When the knob is pressed, switches to config "brightness" */
+    "press": {
+        "config": "brightness"
+    }
+
+  }
+
+]
