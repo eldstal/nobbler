@@ -1,8 +1,5 @@
 import os
 import sys
-if __name__ == '__main__':
-    if 'PIPENV_ACTIVE' not in os.environ:
-        sys.exit(f'This script should be run in a Pipenv.\n\nRun it as:\npipenv run python {os.path.basename(__file__)}')
 
 # Place imports below this line
 import logging

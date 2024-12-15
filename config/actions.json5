@@ -32,6 +32,15 @@
         "command": {
             "command": "echo '{value}' >> /tmp/knob_values.txt"
         }
+
+        "config": {
+            /*
+             * If a knob is named here, apply the config to that knob
+             * Otherwise apply it to the knob that was pressed
+             */
+            "knob":  "primary",
+            "config": "volume"
+        }
      }
   }
 ]

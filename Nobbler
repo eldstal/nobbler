@@ -1,0 +1,60 @@
+#!/bin/env python3
+
+import asyncio
+
+import task.knob
+import task.trigger
+import task.action
+#import config
+import command
+
+
+def default_config():
+  return {
+    "knobs": {
+      "interfaces": [
+        { "type": "serial", "device": "COM10" } 
+      ]
+    },
+
+    "actions": [
+      { "name": "debug", "scaling": [0,100],
+        "actions": { "log": { "message": "You've got mail: {value}" } }
+      }
+    ],
+
+    "configs": [],
+
+    "triggers": []
+
+  }
+
+
+async def main():
+
+  # TODO: Load and sanity check format of configuration
+  conf = default_config()
+
+  await command.init()
+
+  knob_task = asyncio.create_task(task.knob.main(conf))
+  trigger_task = asyncio.create_task(task.trigger.main(conf))
+  action_task = asyncio.create_task(task.action.main(conf))
+
+  await asyncio.sleep(5)
+
+  await command.set_config("volume")
+
+  await asyncio.sleep(5)
+
+  trigger_task.cancel()
+  knob_task.cancel()
+  action_task.cancel()
+
+  await trigger_task
+  await knob_task
+  await action_task
+
+
+if __name__ == "__main__":
+  asyncio.run(main())
