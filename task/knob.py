@@ -137,6 +137,7 @@ async def apply_knob_config(knob_id, new_config):
   config.endstop_strength_unit = new_knob_config.get("endstop_strength_unit", 1)
   config.snap_point = new_knob_config.get("snap_point", 1.1)
   config.text = new_knob_config.get("text", "NO TEXT CONFIGURED!!")
+  config.led_hue = new_knob_config.get("led_hue", 0)
   handler.set_config(config)
 
   # Other settings like actions etc.

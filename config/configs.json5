@@ -29,7 +29,9 @@
       "snap_point" : 1.1,
       "text" : "Volume",
       "detent_positions" : [],
-      "snap_point_bias" : 0
+      "snap_point_bias" : 0,
+      "led_hue": 13
+
     }
 
   },
@@ -49,7 +51,8 @@
       "snap_point" : 1.1,
       "text" : "Volume",
       "detent_positions" : [],
-      "snap_point_bias" : 0
+      "snap_point_bias" : 0,
+      "led_hue": 180
     }
 
   }

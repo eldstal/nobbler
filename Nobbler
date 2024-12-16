@@ -46,7 +46,8 @@ def default_config():
             "snap_point": 1.1,
             "text": "Volume",
             "detent_positions": [],
-            "snap_point_bias": 0
+            "snap_point_bias": 0,
+            "led_hue": 8
           }
         },
 
@@ -63,7 +64,8 @@ def default_config():
             "snap_point": 1.1,
             "text": "Brightness",
             "detent_positions": [],
-            "snap_point_bias": 0
+            "snap_point_bias": 0,
+            "led_hue": 180
           }
 
         }
