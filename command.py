@@ -31,8 +31,9 @@ async def set_config(config_name, knob=None):
 # Knob data is included, because
 # the action may have to do scaling
 #
-async def do_action(action_name, delta, current_value, min_value, max_value):
+async def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
   cmd = {
+          "knob_id": knob_id,
           "action": action_name,
           "delta": delta,
           "value": current_value,

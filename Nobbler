@@ -13,17 +13,62 @@ def default_config():
   return {
     "knobs": {
       "interfaces": [
-        { "type": "serial", "device": "COM10" } 
+        { "type": "serial", "device": "COM10" }
       ]
     },
 
     "actions": [
       { "name": "debug", "scaling": [0,100],
         "actions": { "log": { "message": "You've got mail: {value}" } }
+      },
+
+      { "name": "bright",
+        "actions": { "config": { "config": "brightness" } }
+      },
+
+      { "name": "vol",
+        "actions": { "config": { "config": "volume" } }
       }
     ],
 
-    "configs": [],
+    "configs": [
+        {
+          "name": "volume",
+          "knob_action": "debug",
+          "press_action": "bright",
+
+          "config": {
+            "position": 50,
+            "min_position": 0,
+            "max_position": 100,
+            "position_width_radians": 0.047,
+            "detent_strength_unit": 1,
+            "snap_point": 1.1,
+            "text": "Volume",
+            "detent_positions": [],
+            "snap_point_bias": 0
+          }
+        },
+
+        {
+          "name": "brightness",
+          "knob_action": "debug",
+          "press_action": "vol",
+          "config": {
+            "position": 50,
+            "min_position": 0,
+            "max_position": 100,
+            "position_width_radians": 0.047,
+            "detent_strength_unit": 1,
+            "snap_point": 1.1,
+            "text": "Brightness",
+            "detent_positions": [],
+            "snap_point_bias": 0
+          }
+
+        }
+
+    ],
 
     "triggers": []
 

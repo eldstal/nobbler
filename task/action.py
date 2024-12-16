@@ -1,8 +1,9 @@
 import asyncio
+import math
 
 import command
 
-def rescale(action_config, command):
+async def rescale(action_config, command):
   # No rescaling configured for this action
   # Just return raw values
   if "scaling" not in action_config:
@@ -18,8 +19,8 @@ def rescale(action_config, command):
   return int(round(absolute)), s_min, s_max
 
 
-async def perform_action(action_config, command):
-  scaled_value, range_min, range_max = rescale(action_config, command)
+async def perform_action(source_knob_id, action_config, received_cmd):
+  scaled_value, range_min, range_max = await rescale(action_config, received_cmd)
 
   placeholder = action_config.get("placeholder", "{value}")
 
@@ -28,8 +29,21 @@ async def perform_action(action_config, command):
       msg = action["message"].replace(placeholder, str(scaled_value))
       print(msg)
 
-    elif action_config["type"] == "command":
+    elif action_type == "command":
       pass
+
+    elif action_type == "config":
+      # If a knob was specified, apply it to that
+      # If not, use the knob that invoked the action
+      knob_id = action.get("knob", received_cmd["knob_id"])
+      # TODO: Knob name translation
+
+      new_knob_conf = action.get("config", None)
+      if not new_knob_conf:
+        print(f"Unable to find knob config \"{new_knob_conf}\"")
+        return
+
+      await command.set_config(new_knob_conf, knob_id)
 
 async def main(config):
 
@@ -43,13 +57,12 @@ async def main(config):
   while True:
     try:
       cmd = await command.Q_ACTION.get()
-      print("Action task got " + str(cmd))
 
       if cmd["action"] not in actions:
         print(f"Tried to perform unknown action \"{action}\". Check your configuration.")
         continue
 
-      await perform_action(actions[cmd["action"]], cmd)
+      await perform_action(cmd["knob_id"], actions[cmd["action"]], cmd)
 
     except asyncio.CancelledError:
       print("Terminating action task.")
