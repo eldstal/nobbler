@@ -25,27 +25,61 @@ from smartknob_io.proto_gen import smartknob_pb2
 #  press_nonce
 KNOB_CONNECTION = {}
 
+# Keeps track of which physical interfaces (serial ports)
+# are already in use (= have a handler in KNOB_CONNECTION)
+# so we can skip them during auto-configuration
+KNOB_INTERFACES = {}
 
+#
+# Find the first serial port that identifies as the CH340
+#
+def get_serial_port_auto():
+  ports = sorted(
+      filter(
+          lambda p: p.description != 'n/a',
+          serial.tools.list_ports.comports(),
+      ),
+      key=lambda p: p.device,
+  )
+
+  for p in ports:
+
+    # Don't pick a port that we've already configured
+    if p.device in KNOB_INTERFACES:
+      continue
+
+    if "USB-SERIAL CH340" in p.description:
+      print(f"Auto-connecting to serial port {p.device}")
+      return p.device, serial.Serial(p.device, SMARTKNOB_BAUD, timeout=1.0)
+
+  print("No more knobs found for auto-configuration. Specify a serial port or connect another smartknob.")
+  return None, None
 def get_serial_port(portname):
 
-    ports = sorted(
-        filter(
-            lambda p: p.description != 'n/a',
-            serial.tools.list_ports.comports(),
-        ),
-        key=lambda p: p.device,
-    )
+  ports = sorted(
+      filter(
+          lambda p: p.description != 'n/a',
+          serial.tools.list_ports.comports(),
+      ),
+      key=lambda p: p.device,
+  )
 
-    for p in ports:
-      if p.device == portname:
-        print(f"Connecting to serial port {p.device}")
-        return serial.Serial(p.device, SMARTKNOB_BAUD, timeout=1.0)
+  for p in ports:
+    if p.device == portname:
+      print(f"Connecting to serial port {p.device}")
+      return serial.Serial(p.device, SMARTKNOB_BAUD, timeout=1.0)
 
-    return None
+  return None
 
 def start_serial(portname):
-  port = get_serial_port(portname)
-  if not port: return None
+
+  if portname:
+    port = get_serial_port(portname)
+  else:
+    # Auto-select the first port that looks OK
+    portname, port = get_serial_port_auto()
+
+  if not port: return None, None, None
 
   s = Smartknob(port)
   s.start()
@@ -65,7 +99,7 @@ def start_serial(portname):
   unregister()
   s._logger.info('Connected!')
 
-  return s, first_message
+  return portname, s, first_message
 
 
 def message_from_knob(queue, knob_id, message_type, message):
@@ -155,12 +189,19 @@ async def main(app_config):
 
   for i in app_config["knobs"]["interfaces"]:
     if i["type"] == "serial":
-      portname = i["device"]
+      portname = i.get("device", None)
+
+      portname, handler, first_status = start_serial(portname)
+
+      if not handler:
+        print(f"Failed to start configured knob interface {str(i)}. Skipping.")
+        continue
+
+      KNOB_INTERFACES[portname] = handler
 
       # TODO: Get unique ID from knob
       knob_id = portname
 
-      handler, first_status = start_serial(portname)
       if handler:
         KNOB_CONNECTION[knob_id] = {
             "handler": handler,

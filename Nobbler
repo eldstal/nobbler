@@ -13,7 +13,7 @@ def default_config():
   return {
     "knobs": {
       "interfaces": [
-        { "type": "serial", "device": "COM10" }
+        { "type": "serial" }
       ]
     },
 
