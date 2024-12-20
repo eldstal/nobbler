@@ -1,6 +1,6 @@
 import asyncio
 import math
-from queue import Queue
+from queue import Queue, Full
 import functools
 import serial
 import serial.tools.list_ports

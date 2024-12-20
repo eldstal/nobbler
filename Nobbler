@@ -90,7 +90,7 @@ async def main():
 
   await asyncio.sleep(5)
 
-  await command.set_config("volume")
+  #await command.set_config("volume")
 
   await asyncio.sleep(5)
 
