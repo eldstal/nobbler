@@ -1,6 +1,7 @@
 # nobbler
 Host-side control software for scottbez's [SmartKnob View](https://github.com/scottbez1/smartknob)
 
+![Architecture](doc/arch.png)
 
 ## Ideas
 - Support for multiple named knobs
