@@ -3,12 +3,15 @@
 
 <svg
    width="212.8316mm"
-   height="236.45331mm"
-   viewBox="0 0 212.8316 236.45331"
+   height="283.81052mm"
+   viewBox="0 0 212.8316 283.81052"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
    sodipodi:docname="arch.svg"
+   inkscape:export-filename="D:\Storage\Hax\nobbler\doc\arch.png"
+   inkscape:export-xdpi="72"
+   inkscape:export-ydpi="72"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -27,9 +30,9 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:zoom="1.0770412"
-     inkscape:cx="408.99084"
-     inkscape:cy="530.62035"
+     inkscape:zoom="0.5385206"
+     inkscape:cx="54.779706"
+     inkscape:cy="364.88855"
      inkscape:window-width="3357"
      inkscape:window-height="1417"
      inkscape:window-x="75"
@@ -41,7 +44,7 @@
      fit-margin-right="5"
      fit-margin-bottom="5">
     <sodipodi:guide
-       position="101.92427,199.24783"
+       position="101.92427,246.60504"
        orientation="1,0"
        id="guide15299" />
   </sodipodi:namedview>
@@ -116,6 +119,13 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(3.0943792,-8.212039)">
+    <rect
+       style="fill:#ffffff;stroke:#f2f2f2;stroke-width:1;stroke-linecap:round;stroke-linejoin:round"
+       id="rect14497"
+       width="211.80075"
+       height="282.81201"
+       x="-2.5689452"
+       y="8.7067661" />
     <g
        id="g9407"
        transform="translate(-19.476839,46.715685)">
@@ -300,7 +310,7 @@
          style="font-size:7.40833px;stroke-width:0.264583"
          x="-101.06891"
          y="38.003059"
-         id="tspan38424">Focused window</tspan><tspan
+         id="tspan38424">Window focus</tspan><tspan
          sodipodi:role="line"
          style="font-size:7.40833px;stroke-width:0.264583"
          x="-101.06891"
@@ -311,5 +321,33 @@
          x="-101.06891"
          y="56.523884"
          id="tspan39030">...</tspan></text>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+       id="rect973"
+       width="201.8316"
+       height="28.62689"
+       x="2.4056208"
+       y="257.89566" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
+       d="m 88.928642,238.58103 v 17.45225"
+       id="path975"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
+       d="M 108.55744,257.04512 V 239.59287"
+       id="path1418"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10.5833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';text-align:center;text-anchor:middle;stroke-width:0.264583"
+       x="102.90285"
+       y="274.86786"
+       id="text14125-4"><tspan
+         sodipodi:role="line"
+         style="text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="102.90285"
+         y="274.86786"
+         id="tspan14123-6">1 or more Smartknob(s)</tspan></text>
   </g>
 </svg>
