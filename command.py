@@ -18,11 +18,11 @@ async def init():
 
 #
 # Send a command to change a knob's
-# configuration. If no knob is named,
-# will update all connected knobs
+# view (its active configuration and what we do with data).
+# If no knob is named, will update all connected knobs
 #
-async def set_config(config_name, knob=None):
-  cmd = { "cmd": "config", "config": config_name, "knob": knob }
+async def set_view(view_name, knob=None):
+  cmd = { "cmd": "view", "view": view_name, "knob": knob }
   await Q_KNOB.put(cmd)
 
 

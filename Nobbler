@@ -11,27 +11,37 @@ import command
 
 def default_config():
   return {
+    "nobbler": {
+        "verbose": True
+    },
+
     "knobs": {
       "interfaces": [
-        { "type": "serial" }
+        { "kind": "serial" }
       ]
     },
 
     "actions": [
       { "name": "debug", "scaling": [0,100],
-        "actions": { "log": { "message": "You've got mail: {value}" } }
+        "steps": [
+            { "kind": "log", "message": "You've got mail: {value}" }
+        ]
       },
 
       { "name": "bright",
-        "actions": { "config": { "config": "brightness" } }
+        "steps": [
+            { "kind": "view", "view": "brightness" } 
+        ]
       },
 
       { "name": "vol",
-        "actions": { "config": { "config": "volume" } }
+        "steps": [
+            { "kind": "view", "view": "volume" } 
+        ]
       }
     ],
 
-    "configs": [
+    "views": [
         {
           "name": "volume",
           "knob_action": "debug",

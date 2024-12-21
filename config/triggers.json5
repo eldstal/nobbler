@@ -1,19 +1,28 @@
 [
+  /*
+   * Trigger when a knob is pressed
+   */
   {
+    "kind": "knob",
 
     /* If specified, this only applies to the named knob */
     "knob": "lefty",
 
-    /* Only activates if the current config is "volume" */
+    /* Only activates if the current view is "volume" */
     "filter": {
-      "config": "volume"
+      "view": "volume"
     },
 
     /* When the knob is pressed, switches to config "brightness" */
     "press": {
-        "config": "brightness"
+        "view": "brightness"
     }
 
   }
+
+  /*
+   * TODO: Other kinds of triggers.
+   * For example, if the active window focus changes
+   */
 
 ]

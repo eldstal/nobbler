@@ -112,17 +112,17 @@ def message_from_knob(queue, knob_id, message_type, message):
 
 async def handle_data(knob_id, msg):
   state = KNOB_CONNECTION[knob_id]
-  current_config = state.get("current_config", None)
+  current_view = state.get("current_view", None)
 
   if msg.press_nonce != state["press_nonce"]:
     state["press_nonce"] = msg.press_nonce
     KNOB_CONNECTION[knob_id] = state
 
-    if current_config:
-      if "press_action" in current_config:
+    if current_view:
+      if "press_action" in current_view:
         await command.do_action(
                           knob_id,
-                          current_config["press_action"],
+                          current_view["press_action"],
                           1,
                           1,
                           0,
@@ -139,11 +139,11 @@ async def handle_data(knob_id, msg):
     state["prev_position"] = msg.current_position
     KNOB_CONNECTION[knob_id] = state
 
-    if current_config:
-      if "knob_action" in current_config:
+    if current_view:
+      if "knob_action" in current_view:
         await command.do_action(
                           knob_id,
-                          current_config["knob_action"],
+                          current_view["knob_action"],
                           delta,
                           msg.current_position,
                           msg.config.min_position,
@@ -151,7 +151,7 @@ async def handle_data(knob_id, msg):
                       )
 
 
-async def apply_knob_config(knob_id, new_config):
+async def apply_knob_view(knob_id, new_view):
   state = KNOB_CONNECTION.get(knob_id, None)
   if not state:
     print(f"Unable to update configuration for unknown knob {knob_id}.")
@@ -160,7 +160,7 @@ async def apply_knob_config(knob_id, new_config):
   handler = state["handler"]
 
   # The knob's parameters
-  new_knob_config = new_config["config"]
+  new_knob_config = new_view["config"]
 
   config = smartknob_pb2.SmartKnobConfig()
   config.position = new_knob_config.get("position", 0)
@@ -175,20 +175,22 @@ async def apply_knob_config(knob_id, new_config):
   handler.set_config(config)
 
   # Other settings like actions etc.
-  state["current_config"] = new_config
+  state["current_view"] = new_view
   KNOB_CONNECTION[knob_id] = state
 
 async def main(app_config):
 
   # TODO: Configurable startup config
-  default_config = app_config["configs"][0]
+  default_view = app_config["views"][0]
 
-  knob_configs = {}
-  for c in app_config["configs"]:
-    knob_configs[c["name"]] = c
+  verbose = app_config["nobbler"]["verbose"]
+
+  knob_views = {}
+  for c in app_config["views"]:
+    knob_views[c["name"]] = c
 
   for i in app_config["knobs"]["interfaces"]:
-    if i["type"] == "serial":
+    if i["kind"] == "serial":
       portname = i.get("device", None)
 
       portname, handler, first_status = start_serial(portname)
@@ -208,7 +210,7 @@ async def main(app_config):
             "prev_position": first_status.current_position,
             "position_nonce": first_status.config.position_nonce,
             "press_nonce": first_status.press_nonce,
-            "current_config": default_config
+            "current_view": default_view
           }
 
         for message_type in [ "smartknob_state" ]:
@@ -221,25 +223,29 @@ async def main(app_config):
           )
 
         # Give the knob a startup configuration
-        await apply_knob_config(knob_id, KNOB_CONNECTION[knob_id]["current_config"])
+        await apply_knob_view(knob_id, KNOB_CONNECTION[knob_id]["current_view"])
 
       else:
         print(f"Couldn't find a knob on {portname}...")
 
-  print(f"Started communications with {len(KNOB_CONNECTION)} knob(s).")
+  if (verbose):
+    print(f"Started communications with {len(KNOB_CONNECTION)} knob(s).")
 
   while True:
     try:
       cmd = await command.Q_KNOB.get()
-      #print("Knob task got: " + str(cmd))
 
-      if cmd["cmd"] == "config":
+      if cmd["cmd"] != "data":
+        if (verbose): print("Knob task got: " + str(cmd))
+        
+
+      if cmd["cmd"] == "view":
+
         # Someone has requested a configuration change for a knob
-
-        new_knob_config = knob_configs.get(cmd["config"], None)
+        new_knob_config = knob_views.get(cmd["view"], None)
 
         if not new_knob_config:
-          print(f"Unable to find knob configuration {cmd['config']}. Check your app configuration.")
+          print(f"Unable to find knob view {cmd['view']}. Check your app configuration.")
           continue
 
         # By default, apply to all knobs
@@ -251,7 +257,7 @@ async def main(app_config):
           # TODO: Knob name translation
 
         for knob_id in knob_ids:
-          await apply_knob_config(knob_id, new_knob_config)
+          await apply_knob_view(knob_id, new_knob_config)
 
       elif cmd["cmd"] == "data":
         # Data has arrived from a knob
@@ -265,7 +271,7 @@ async def main(app_config):
           continue
 
     except asyncio.CancelledError:
-      print("Terminating knob task.")
+      if (verbose): print("Terminating knob task.")
       break
 
 

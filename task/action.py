@@ -24,43 +24,47 @@ async def perform_action(source_knob_id, action_config, received_cmd):
 
   placeholder = action_config.get("placeholder", "{value}")
 
-  for action_type, action in action_config["actions"].items():
-    if action_type == "log":
-      msg = action["message"].replace(placeholder, str(scaled_value))
+  for step in action_config["steps"]:
+    action_kind = step["kind"]
+
+    if action_kind == "log":
+      msg = step["message"].replace(placeholder, str(scaled_value))
       print(msg)
 
-    elif action_type == "command":
+    elif action_kind == "command":
       pass
 
-    elif action_type == "config":
+    elif action_kind == "view":
       # If a knob was specified, apply it to that
       # If not, use the knob that invoked the action
-      knob_id = action.get("knob", received_cmd["knob_id"])
+      knob_id = step.get("knob", received_cmd["knob_id"])
       # TODO: Knob name translation
 
-      new_knob_conf = action.get("config", None)
-      if not new_knob_conf:
-        print(f"Unable to find knob config \"{new_knob_conf}\"")
+      new_view = step.get("view", None)
+      if not new_view:
+        print(f"Unable to find knob view \"{new_view}\"")
         return
 
-      await command.set_config(new_knob_conf, knob_id)
+      await command.set_view(new_view, knob_id)
 
-async def main(config):
+async def main(app_config):
+
+  verbose = app_config["nobbler"]["verbose"]
 
   actions = {}
 
-  for a in config["actions"]:
+  for a in app_config["actions"]:
     actions[a["name"]] = a
-
-  print("Action task started.")
 
   while True:
     try:
       cmd = await command.Q_ACTION.get()
 
       if cmd["action"] not in actions:
-        print(f"Tried to perform unknown action \"{action}\". Check your configuration.")
+        print(f"Tried to perform unknown action \"{cmd['action']}\". Check your configuration.")
         continue
+
+      if (verbose): print("Performing action: " + str(cmd["action"]))
 
       await perform_action(cmd["knob_id"], actions[cmd["action"]], cmd)
 

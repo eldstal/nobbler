@@ -1,6 +1,12 @@
 [
+  /*
+   * An action is something to do when A
+   * knob is turned or pressed. Think of it as a named "script"
+   * Use the "name" of an action in a view
+   * to specify when it gets invoked.
+   */
   {
-    /* Use this in a configuration */
+    /* Use this in a view */
     "name": "debug",
 
     /*
@@ -21,26 +27,38 @@
     "scaling": [ 0, 100 ],
 
     /*
-     * This determines what happens.
-     * Specify one or more
+     * This determines what steps to carry out.
+     * Specify one or more, they will be carried out in order.
      */
-     "actions": {
-        "log": {
+     "steps": [
+        {
+            "kind": "log",
             "message": "The value changed. It's {value} now."
-         },
+        },
 
-        "command": {
+        /*
+         * Run an external command
+         */
+        {
+            "kind": "command",
             "command": "echo '{value}' >> /tmp/knob_values.txt"
-        }
+        },
 
-        "config": {
+        /*
+         * Reconfigure a knob
+         */
+        {
+            "kind": "view",
+
             /*
              * If a knob is named here, apply the config to that knob
              * Otherwise apply it to the knob that was pressed
              */
             "knob":  "primary",
-            "config": "volume"
+
+            /* Which view to activate */
+            "view": "volume"
         }
-     }
+     ]
   }
 ]
