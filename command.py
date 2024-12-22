@@ -50,6 +50,14 @@ def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
         }
   Q_ACTION.put(cmd)
 
+def window_focused(title, appname):
+  cmd = {
+          "cmd": "window-focused",
+          "title": title,
+          "appname": appname
+        }
+  Q_TRIGGER.put(cmd)
+
 
 def stop_knob():
   Q_KNOB.put(None)

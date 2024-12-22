@@ -217,7 +217,7 @@ def main(app_config):
   # TODO: Configurable startup config
   default_view = app_config["views"][0]
 
-  verbose = app_config["nobbler"]["verbose"]
+  verbose = app_config["nobbler"].get("verbose", False)
 
   knob_views = {}
   for c in app_config["views"]:

@@ -69,6 +69,24 @@ def default_config():
         },
 
         {
+          "name": "bonzo",
+          "knob_action": "debug",
+
+          "config": {
+            "position": 25,
+            "min_position": 0,
+            "max_position": 50,
+            "position_width_radians": 0.094,
+            "detent_strength_unit": 0.5,
+            "snap_point": 1.1,
+            "text": "Bonzo!",
+            "detent_positions": [],
+            "snap_point_bias": 0,
+            "led_hue": 95
+          }
+        },
+
+        {
           "name": "brightness",
           "knob_action": "debug",
           "press_action": "switch_vol",
@@ -89,7 +107,33 @@ def default_config():
 
     ],
 
-    "triggers": []
+    "triggers": [
+      {
+        "kind": "active-window",
+
+        "mappings": [
+          # Match a window by title
+          {
+            "filters": [
+              { "property": "title", "pattern": ".*[Nn]otepad.*" },
+            ],
+            "views": [
+              { "view": "bonzo" },
+            ] 
+
+          },
+
+          # A default, if no other window matches
+          {
+            "filters": [],
+            "views": [
+              { "view": "volume" }
+            ]
+          }
+        ]
+      }
+
+    ]
 
   }
 
@@ -110,7 +154,10 @@ def main():
   trigger_thread.start()
   action_thread.start()
 
-  time.sleep(10)
+  try:
+    time.sleep(10)
+  except KeyboardInterrupt:
+    pass
 
 
   command.stop_knob()

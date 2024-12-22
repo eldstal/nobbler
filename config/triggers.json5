@@ -21,8 +21,62 @@
   }
 
   /*
-   * TODO: Other kinds of triggers.
-   * For example, if the active window focus changes
+   * Trigger when the active window changes,
+   * for example when you focus your text editor
    */
+   {
+      "kind": "active-window",
+
+      /*
+       * Each of the mappings will be tested
+       * against the new focused window
+       * IN THE ORDER THEY ARE SPECIFIED.
+       * If multiple match, the first matching
+       * mapping will apply.
+       */
+      "mappings": [
+        {
+          
+          /*
+           * All of the specified filters must match the
+           * window in order for the mapping to match (and be applied)
+           */
+          "filters": [
+          
+            {
+              /*
+               * Which property do we want to match?
+               * values:
+               *   "title"
+               *   "appname"
+               * Default: "title"
+               */
+              "property": "title",
+
+             /*
+              * A regular expression.
+              * If this matches the property set above,
+              * the mapping matches and will be carried out.
+              */
+              "pattern": "[Nn]otepad.*"
+            },
+
+          ]
+          
+          /*
+           * Which view(s) to apply when this mapping matches a window.
+           * If no knob is named, applies to all knobs
+           */
+          "views": [
+            { "knob": "lefty", "view": "zoom" },
+            { "knob": "righty", "view": "volume" },
+          ] 
+
+        }
+
+      ]
+
+
+   }
 
 ]
