@@ -1,6 +1,7 @@
 #!/bin/env python3
 
-import asyncio
+import time
+from threading import Thread
 
 import task.knob
 import task.trigger
@@ -93,31 +94,33 @@ def default_config():
   }
 
 
-async def main():
+def main():
 
   # TODO: Load and sanity check format of configuration
   conf = default_config()
 
-  await command.init()
+  command.init()
 
-  knob_task = asyncio.create_task(task.knob.main(conf))
-  trigger_task = asyncio.create_task(task.trigger.main(conf))
-  action_task = asyncio.create_task(task.action.main(conf))
+  knob_thread = Thread(target=task.knob.main, args=(conf,))
+  trigger_thread = Thread(target=task.trigger.main, args=(conf,))
+  action_thread = Thread(target=task.action.main, args=(conf,))
 
-  await asyncio.sleep(5)
 
-  #await command.set_config("volume")
+  knob_thread.start()
+  trigger_thread.start()
+  action_thread.start()
 
-  await asyncio.sleep(5)
+  time.sleep(10)
 
-  trigger_task.cancel()
-  knob_task.cancel()
-  action_task.cancel()
 
-  await trigger_task
-  await knob_task
-  await action_task
+  command.stop_knob()
+  command.stop_trigger()
+  command.stop_action()
+
+  knob_thread.join()
+  trigger_thread.join()
+  action_thread.join()
 
 
 if __name__ == "__main__":
-  asyncio.run(main())
+  main()

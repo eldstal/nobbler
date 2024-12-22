@@ -4,7 +4,7 @@ import os
 
 import command
 
-async def rescale(action_config, command):
+def rescale(action_config, command):
   # No rescaling configured for this action
   # Just return raw values
   if "scaling" not in action_config:
@@ -20,12 +20,12 @@ async def rescale(action_config, command):
   return absolute, s_min, s_max
 
 
-async def perform_action(source_knob_id, action_config, received_cmd):
+def perform_action(source_knob_id, action_config, received_cmd):
 
   placeholder = action_config.get("placeholder", "{value}")
   do_round = action_config.get("round", False)
 
-  scaled_value, range_min, range_max = await rescale(action_config, received_cmd)
+  scaled_value, range_min, range_max = rescale(action_config, received_cmd)
 
   if do_round:
     scaled_value = int(round(scaled_value))
@@ -61,9 +61,9 @@ async def perform_action(source_knob_id, action_config, received_cmd):
         print(f"Unable to find knob view \"{new_view}\"")
         return
 
-      await command.set_view(new_view, knob_id)
+      command.set_view(new_view, knob_id)
 
-async def main(app_config):
+def main(app_config):
 
   verbose = app_config["nobbler"]["verbose"]
 
@@ -73,17 +73,16 @@ async def main(app_config):
     actions[a["name"]] = a
 
   while True:
-    try:
-      cmd = await command.Q_ACTION.get()
+    cmd = command.Q_ACTION.get()
 
-      if cmd["action"] not in actions:
-        print(f"Tried to perform unknown action \"{cmd['action']}\". Check your configuration.")
-        continue
-
-      if (verbose): print("Performing action: " + str(cmd["action"]))
-
-      await perform_action(cmd["knob_id"], actions[cmd["action"]], cmd)
-
-    except asyncio.CancelledError:
+    if cmd is None:
       print("Terminating action task.")
       break
+
+    if cmd["action"] not in actions:
+      print(f"Tried to perform unknown action \"{cmd['action']}\". Check your configuration.")
+      continue
+
+    if (verbose): print("Performing action: " + str(cmd["action"]))
+
+    perform_action(cmd["knob_id"], actions[cmd["action"]], cmd)
