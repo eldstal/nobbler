@@ -103,11 +103,45 @@ def start_serial(portname):
 
 
 def message_from_knob(queue, knob_id, message_type, message):
-  #loop.call_soon_threadsafe(command.new_data, knob_id, message_type, message)
+  
+
+  state = KNOB_CONNECTION[knob_id]
+
+
+  # We will get -lots- of updates from the knob,
+  # since the subposition value jitters.
+  # We don't care about those and don't want those events
+  # clogging up the event queue slowing down the asyncio,
+  # so we skip them here.
+
+  if message_type == "smartknob_state":
+
+    compare = lambda value, key: value == state["current_view"]["config"].get(key, value)
+
+    # TODO: This probably isn't a safe comparison.
+    # floating point equality is a finnicky subject.
+    # Ideally, we should have a config_nonce in the knob state.    
+    config_is_same = (
+      compare(message.config.min_position, "min_position") and
+      compare(message.config.max_position, "max_position") and
+      #compare(message.config.position_width_radians, "position_with_radians") and
+      #compare(message.config.detent_strength_unit, "detent_strength_unit") and
+      #compare(message.config.endstop_strength_unit, "endstop_strength_unit") and
+      #compare(message.config.snap_point, "snap_point") and
+      compare(message.config.text, "text") and
+      compare(message.config.led_hue, "led_hue")
+    )
+     
+
+    position_is_same = (message.current_position == state["prev_position"] and
+                        message.press_nonce == state["press_nonce"]
+                       )
+    
+    if config_is_same and position_is_same: return
+    
   cmd = { "cmd": "data", "knob_id": knob_id, "message_type": message_type, "message": message }
   queue.put_nowait(cmd)
-  #loop.create_task(command.new_data(knob_id, message_type, message))
-  #loop.run_until_complete(command.new_data(knob_id, message_type, message))
+
 
 
 async def handle_data(knob_id, msg):
@@ -178,6 +212,7 @@ async def apply_knob_view(knob_id, new_view):
   state["current_view"] = new_view
   KNOB_CONNECTION[knob_id] = state
 
+
 async def main(app_config):
 
   # TODO: Configurable startup config
@@ -235,8 +270,7 @@ async def main(app_config):
     try:
       cmd = await command.Q_KNOB.get()
 
-      if cmd["cmd"] != "data":
-        if (verbose): print("Knob task got: " + str(cmd))
+      #if (verbose): print("Knob task got: " + str(cmd))
         
 
       if cmd["cmd"] == "view":

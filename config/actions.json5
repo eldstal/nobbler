@@ -17,14 +17,34 @@
      */
     "placeholder": "{value}",
 
+    /*
+     * If set to "true", {value} will be
+     * positive if the knob was turned clockwise
+     * and negative if turned counter-clockwise.
+     * One step will correspond to 1 or -1.
+     * If scaling is set to [ a, b ],
+     * one step ccw will correspond to a
+     * and one step cw will correspond to value b.
+     * default: false
+     */
+    "relative": false,
 
     /*
      * If present, the value from the knob will be
      * re-scaled to fit in this range (inclusive)
      * By default, no re-scaling is performed
      * {value} will be the value from the knob.
+     * default: no scaling
      */
     "scaling": [ 0, 100 ],
+
+    /*
+     * If set to true, will round to the nearest integer.
+     * Otherwise {value} will be a float, which may include
+     * a decimal point.
+     * Default: false
+     */
+    "round": true,
 
     /*
      * This determines what steps to carry out.

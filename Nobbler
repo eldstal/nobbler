@@ -28,13 +28,19 @@ def default_config():
         ]
       },
 
-      { "name": "bright",
+      { "name": "system_volume", "scaling": [0,65535], "round": True,
+        "steps": [
+            { "kind": "command", "command": "nircmd setsysvolume {value}" }
+        ]
+      },
+
+      { "name": "switch_bright",
         "steps": [
             { "kind": "view", "view": "brightness" } 
         ]
       },
 
-      { "name": "vol",
+      { "name": "switch_vol",
         "steps": [
             { "kind": "view", "view": "volume" } 
         ]
@@ -44,8 +50,8 @@ def default_config():
     "views": [
         {
           "name": "volume",
-          "knob_action": "debug",
-          "press_action": "bright",
+          "knob_action": "system_volume",
+          "press_action": "switch_bright",
 
           "config": {
             "position": 50,
@@ -64,7 +70,7 @@ def default_config():
         {
           "name": "brightness",
           "knob_action": "debug",
-          "press_action": "vol",
+          "press_action": "switch_vol",
           "config": {
             "position": 50,
             "min_position": 0,

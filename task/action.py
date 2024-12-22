@@ -1,5 +1,6 @@
 import asyncio
 import math
+import os
 
 import command
 
@@ -16,13 +17,19 @@ async def rescale(action_config, command):
 
   absolute = relative * (s_max - s_min) + s_min
 
-  return int(round(absolute)), s_min, s_max
+  return absolute, s_min, s_max
 
 
 async def perform_action(source_knob_id, action_config, received_cmd):
-  scaled_value, range_min, range_max = await rescale(action_config, received_cmd)
 
   placeholder = action_config.get("placeholder", "{value}")
+  do_round = action_config.get("round", False)
+
+  scaled_value, range_min, range_max = await rescale(action_config, received_cmd)
+
+  if do_round:
+    scaled_value = int(round(scaled_value))
+
 
   for step in action_config["steps"]:
     action_kind = step["kind"]
@@ -32,7 +39,16 @@ async def perform_action(source_knob_id, action_config, received_cmd):
       print(msg)
 
     elif action_kind == "command":
-      pass
+
+      cmdline = step.get("command", None)
+      if not cmdline:
+        continue
+
+      cmdline = cmdline.replace(placeholder, str(scaled_value))
+      print("Invoking system command:  " + cmdline)
+
+      # TODO: Fork?
+      os.system(cmdline)
 
     elif action_kind == "view":
       # If a knob was specified, apply it to that
