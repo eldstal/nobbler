@@ -1,0 +1,15 @@
+{
+    "interfaces": [
+        {
+            "kind": "serial",
+
+            /*
+             * Optional.
+             * Leave out to auto-use the first valid-looking serial interface
+             * that isn't already connected.
+             * Add more automatic interfaces like that to auto-detect multiple knobs.
+             * 
+            "interface": "COM11"
+        }
+    ]
+}
