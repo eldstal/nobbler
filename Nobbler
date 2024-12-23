@@ -1,153 +1,33 @@
 #!/bin/env python3
 
+import sys
 import time
 from threading import Thread
 
 import task.knob
 import task.trigger
 import task.action
-#import config
+import config
 import command
 
 
-def default_config():
-  return {
-    "nobbler": {
-        "verbose": True
-    },
-
-    "knobs": {
-      "interfaces": [
-        { "kind": "serial" }
-      ]
-    },
-
-    "actions": [
-      { "name": "debug", "scaling": [0,100],
-        "steps": [
-            { "kind": "log", "message": "You've got mail: {value}" }
-        ]
-      },
-
-      { "name": "system_volume", "scaling": [0,65535], "round": True,
-        "steps": [
-            { "kind": "command", "command": "nircmd setsysvolume {value}" }
-        ]
-      },
-
-      { "name": "switch_bright",
-        "steps": [
-            { "kind": "view", "view": "brightness" } 
-        ]
-      },
-
-      { "name": "switch_vol",
-        "steps": [
-            { "kind": "view", "view": "volume" } 
-        ]
-      }
-    ],
-
-    "views": [
-        {
-          "name": "volume",
-          "knob_action": "system_volume",
-          "press_action": "switch_bright",
-
-          "config": {
-            "position": 50,
-            "min_position": 0,
-            "max_position": 100,
-            "position_width_radians": 0.047,
-            "detent_strength_unit": 1,
-            "snap_point": 1.1,
-            "text": "Volume",
-            "detent_positions": [],
-            "snap_point_bias": 0,
-            "led_hue": 8
-          }
-        },
-
-        {
-          "name": "bonzo",
-          "knob_action": "debug",
-
-          "config": {
-            "position": 25,
-            "min_position": 0,
-            "max_position": 50,
-            "position_width_radians": 0.094,
-            "detent_strength_unit": 0.5,
-            "snap_point": 1.1,
-            "text": "Bonzo!",
-            "detent_positions": [],
-            "snap_point_bias": 0,
-            "led_hue": 95
-          }
-        },
-
-        {
-          "name": "brightness",
-          "knob_action": "debug",
-          "press_action": "switch_vol",
-          "config": {
-            "position": 50,
-            "min_position": 0,
-            "max_position": 100,
-            "position_width_radians": 0.047,
-            "detent_strength_unit": 1,
-            "snap_point": 1.1,
-            "text": "Brightness",
-            "detent_positions": [],
-            "snap_point_bias": 0,
-            "led_hue": 180
-          }
-
-        }
-
-    ],
-
-    "triggers": [
-      {
-        "kind": "active-window",
-
-        "mappings": [
-          # Match a window by title
-          {
-            "filters": [
-              { "property": "title", "pattern": ".*[Nn]otepad.*" },
-            ],
-            "views": [
-              { "view": "bonzo" },
-            ] 
-
-          },
-
-          # A default, if no other window matches
-          {
-            "filters": [],
-            "views": [
-              { "view": "volume" }
-            ]
-          }
-        ]
-      }
-
-    ]
-
-  }
 
 
 def main():
 
   # TODO: Load and sanity check format of configuration
-  conf = default_config()
+  app_config = config.default_config()
+
+  try:
+    app_config = config.validate_config(app_config)
+  except Exception as e:
+    sys.exit(e.code)
 
   command.init()
 
-  knob_thread = Thread(target=task.knob.main, args=(conf,))
-  trigger_thread = Thread(target=task.trigger.main, args=(conf,))
-  action_thread = Thread(target=task.action.main, args=(conf,))
+  knob_thread = Thread(target=task.knob.main, args=(app_config,))
+  trigger_thread = Thread(target=task.trigger.main, args=(app_config,))
+  action_thread = Thread(target=task.action.main, args=(app_config,))
 
 
   knob_thread.start()

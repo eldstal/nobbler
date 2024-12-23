@@ -3,3 +3,4 @@ cobs
 pyserial
 protobuf==3.20.3
 pywinctl
+schema
