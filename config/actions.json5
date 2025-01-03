@@ -47,10 +47,24 @@
     "round": true,
 
     /*
-     * This determines what steps to carry out.
+     * This is optional. If specified, this OS command will be
+     * executed to read the current state (e.g. current volume)
+     * when a view is activated which has this action as its knob_action.
+     * That's handy, so that when you activate a volume control on the knob,
+     * it will start set to the current volume.
+     * If "scaling" is set for this action, it will be applied (in inverse) to the
+     * value returned by get_command, so that the value shown on the knob is correct.
+     * If no "scaling" is set, the command should output a value within the
+     * configured range of the knob.
+     * Basically, the output should be in the same range as you expect from {value} in the steps below.
+     */
+    "get_command": "/usr/bin/local/get_current_volume",
+
+    /*
+     * This determines what steps to carry out when the action is triggered.
      * Specify one or more, they will be carried out in order.
      */
-     "steps": [
+    "steps": [
         {
             "kind": "log",
             "message": "The value changed. It's {value} now."

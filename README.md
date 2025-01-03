@@ -8,6 +8,7 @@ Host-side control software for scottbez's [SmartKnob View](https://github.com/sc
 - Change configuration when the knob is pressed
 - Change configuration when the host's focused window changes
 - Run an OS command when a knob is turned or pressed
+- Run an OS command when a new configuration is shown (e.g. get current system volume)
 
 ## Ideas
 - Support for multiple named knobs
@@ -18,7 +19,9 @@ Host-side control software for scottbez's [SmartKnob View](https://github.com/sc
 
 - Named configs
   - Run a command to get current value?
-    - This will probably have to be a polling thing. Kind of sucks.
+    - Already works when you switch to a view
+    - Should probably be a polling thing or something.
+    - Maybe support for a persistent subprocess, so you -can- implement event-driven if you want to.
 
 - Triggers to automatically switch config
   - "Button" press

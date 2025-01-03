@@ -31,6 +31,7 @@ CONFIG_SCHEMA = Schema(
           Optional("relative", default=False): bool,
           Optional("scaling"): And([int], lambda l: len(l)==2),
           Optional("round", default=True): bool,
+          Optional("get_command"): str,
 
           "steps": [
             Or(
@@ -117,9 +118,10 @@ def default_config():
         ]
       },
 
-      { "name": "system_volume", "scaling": [0,65535], "round": True,
+      { "name": "system_volume", "scaling": [0,100], "round": True,
+        "get_command": "python {scripts}/winvolume.py get",
         "steps": [
-            { "kind": "command", "command": "nircmd setsysvolume {value}" }
+            { "kind": "command", "command": "python {scripts}/winvolume.py set {value}" }
         ]
       },
 
@@ -145,9 +147,9 @@ def default_config():
           "config": {
             "position": 50,
             "min_position": 0,
-            "max_position": 100,
-            "position_width_radians": 0.047,
-            "detent_strength_unit": 1,
+            "max_position": 11,
+            "position_width_radians": 0.27,
+            "detent_strength_unit": 0.3,
             "snap_point": 1.1,
             "text": "Volume",
             "detent_positions": [],

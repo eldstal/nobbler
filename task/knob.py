@@ -195,10 +195,21 @@ def apply_knob_view(knob_id, new_view):
   # The knob's parameters
   new_knob_config = new_view["config"]
 
+  initial_pos = new_knob_config.get("position", 0)
+  pos_min = new_knob_config.get("min_position", 0)
+  pos_max = new_knob_config.get("max_position", 5)
+
+  # If the action has a get_command specified, we'll call that
+  # to set the initial value for the view. Just you watch!
+  knob_action = new_view.get("knob_action", None)
+  if knob_action:
+    dynamic_initial = command.action_get_value(knob_action, pos_min, pos_max)
+    if dynamic_initial: initial_pos = dynamic_initial
+
   config = smartknob_pb2.SmartKnobConfig()
-  config.position = new_knob_config.get("position", 0)
-  config.min_position = new_knob_config.get("min_position", 0)
-  config.max_position = new_knob_config.get("max_position", 5)
+  config.position = initial_pos
+  config.min_position = pos_min
+  config.max_position = pos_max
   config.position_width_radians = new_knob_config.get("position_width_radians", math.radians(10))
   config.detent_strength_unit = new_knob_config.get("detent_strength_unit", 1)
   config.endstop_strength_unit = new_knob_config.get("endstop_strength_unit", 1)

@@ -1,4 +1,7 @@
 import queue
+import os
+
+import task.action
 
 
 # Send desired config change
@@ -14,6 +17,16 @@ Q_ACTION = None
 
 
 
+def _update_command_path():
+  approot = os.path.dirname(__file__)
+  scriptdir = os.path.join(approot, "scripts")
+  if not os.path.isdir(scriptdir): return
+
+  if "PATH" not in os.environ: return
+
+  os.environ["PATH"] += os.pathsep + scriptdir
+  print("Added Nobbler scripts to PATH. PATH is now =" + os.environ["PATH"])
+
 def init():
   global Q_KNOB
   Q_KNOB = queue.Queue()
@@ -23,6 +36,8 @@ def init():
 
   global Q_TRIGGER
   Q_TRIGGER = queue.Queue()
+
+  #_update_command_path()
 
 #
 # Send a command to change a knob's
@@ -41,6 +56,7 @@ def set_view(view_name, knob=None):
 #
 def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
   cmd = {
+          "cmd": "do_action",
           "knob_id": knob_id,
           "action": action_name,
           "delta": delta,
@@ -50,6 +66,36 @@ def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
         }
   Q_ACTION.put(cmd)
 
+#
+# Run the `get_command` associated with an action
+# and return the resulting value. If scaling is configured
+# for the action, the value will be converted to the range
+# [ v_min, v_max ]
+# Returns None if no command is configured
+# Returns None if the command can't be invoked
+# Returns None if no output can be parsed
+#
+def action_get_value(action_name, v_min, v_max):
+  q_response = queue.Queue()
+  cmd = {
+    "cmd": "get_action_value",
+    "action": action_name,
+    "min": v_min,
+    "max": v_max,
+    "callback": q_response.put
+  }
+  Q_ACTION.put(cmd)
+
+  try:
+    result = q_response.get(timeout=1)
+  except queue.Empty:
+    print("get_command for action {action_name} timed out. Won't set knob value.")
+
+  if not result:
+    return None
+  
+  return round(result)
+
 def window_focused(title, appname):
   cmd = {
           "cmd": "window-focused",
@@ -57,6 +103,10 @@ def window_focused(title, appname):
           "appname": appname
         }
   Q_TRIGGER.put(cmd)
+
+
+
+
 
 
 def stop_knob():

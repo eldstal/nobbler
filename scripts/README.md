@@ -2,8 +2,8 @@
 
 This directory contains useful scripts for system interaction. This functionality doesn't really belong in Nobbler, but is probably useful for common tasks you might want your knob to perform.
 
-The `scripts/` directory is automatically added to the end of $PATH or %PATH% before invoking action commands,
-so you can configure Nobbler to call these.
+The `scripts/` directory is automatically substituted for `{scripts}` before invoking action commands,
+so you can configure Nobbler to call these as `python {scripts}/winvolume.py`.
 
 Some have extra external dependencies, and these can be installed using
 
