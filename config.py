@@ -145,7 +145,7 @@ def default_config():
           "press_action": "switch_bright",
 
           "config": {
-            "position": 50,
+            "position": 4,
             "min_position": 0,
             "max_position": 11,
             "position_width_radians": 0.27,

@@ -1,7 +1,9 @@
 import queue
 import os
+import multiprocessing
 
 import task.action
+import task.state
 
 
 # Send desired config change
@@ -15,17 +17,10 @@ Q_TRIGGER = None
 # Send desired action to perform
 Q_ACTION = None
 
+# Used to manage the polling of system information
+# by actions' get_command
+Q_STATE = None
 
-
-def _update_command_path():
-  approot = os.path.dirname(__file__)
-  scriptdir = os.path.join(approot, "scripts")
-  if not os.path.isdir(scriptdir): return
-
-  if "PATH" not in os.environ: return
-
-  os.environ["PATH"] += os.pathsep + scriptdir
-  print("Added Nobbler scripts to PATH. PATH is now =" + os.environ["PATH"])
 
 def init():
   global Q_KNOB
@@ -37,7 +32,11 @@ def init():
   global Q_TRIGGER
   Q_TRIGGER = queue.Queue()
 
-  #_update_command_path()
+  # This needs to be a multiprocessing queue
+  # because we use multiprocessing for the
+  # background commands.
+  global Q_STATE
+  Q_STATE = multiprocessing.Queue()
 
 #
 # Send a command to change a knob's
@@ -67,7 +66,7 @@ def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
   Q_ACTION.put(cmd)
 
 #
-# Run the `get_command` associated with an action
+# Fetch the result of `get_command` associated with an action
 # and return the resulting value. If scaling is configured
 # for the action, the value will be converted to the range
 # [ v_min, v_max ]
@@ -75,26 +74,14 @@ def do_action(knob_id, action_name, delta, current_value, min_value, max_value):
 # Returns None if the command can't be invoked
 # Returns None if no output can be parsed
 #
-def action_get_value(action_name, v_min, v_max):
-  q_response = queue.Queue()
-  cmd = {
-    "cmd": "get_action_value",
-    "action": action_name,
-    "min": v_min,
-    "max": v_max,
-    "callback": q_response.put
-  }
-  Q_ACTION.put(cmd)
+def action_get_value(action_name, v_min, v_max, allow_delay=False):
+ 
+  value = task.state.get_value_for_action(action_name, v_min, v_max, allow_delay)
 
-  try:
-    result = q_response.get(timeout=1)
-  except queue.Empty:
-    print("get_command for action {action_name} timed out. Won't set knob value.")
-
-  if not result:
+  if not value:
     return None
   
-  return round(result)
+  return round(value)
 
 def window_focused(title, appname):
   cmd = {
@@ -117,3 +104,6 @@ def stop_trigger():
 
 def stop_action():
   Q_ACTION.put(None)
+
+def stop_state():
+  Q_STATE.put(None)

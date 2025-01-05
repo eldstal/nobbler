@@ -7,6 +7,7 @@ from threading import Thread
 import task.knob
 import task.trigger
 import task.action
+import task.state
 import config
 import command
 
@@ -25,14 +26,16 @@ def main():
 
   command.init()
 
-  knob_thread = Thread(target=task.knob.main, args=(app_config,))
+  state_thread = Thread(target=task.state.main, args=(app_config,))
   trigger_thread = Thread(target=task.trigger.main, args=(app_config,))
   action_thread = Thread(target=task.action.main, args=(app_config,))
+  knob_thread = Thread(target=task.knob.main, args=(app_config,))
+  
 
-
-  knob_thread.start()
+  state_thread.start()
   trigger_thread.start()
   action_thread.start()
+  knob_thread.start()
 
   try:
     time.sleep(10)
@@ -40,13 +43,15 @@ def main():
     pass
 
 
-  command.stop_knob()
+  command.stop_state()
   command.stop_trigger()
   command.stop_action()
+  command.stop_knob()
 
-  knob_thread.join()
+  state_thread.join()  
   trigger_thread.join()
   action_thread.join()
+  knob_thread.join()
 
 
 if __name__ == "__main__":

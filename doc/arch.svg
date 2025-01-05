@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="212.8316mm"
-   height="283.81052mm"
-   viewBox="0 0 212.8316 283.81052"
+   width="295.09604mm"
+   height="283.81201mm"
+   viewBox="0 0 295.09603 283.81202"
    version="1.1"
    id="svg5"
    inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
@@ -30,23 +30,27 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:zoom="0.5385206"
-     inkscape:cx="54.779706"
-     inkscape:cy="364.88855"
+     inkscape:zoom="1.0770412"
+     inkscape:cx="718.17123"
+     inkscape:cy="553.83211"
      inkscape:window-width="3357"
      inkscape:window-height="1417"
      inkscape:window-x="75"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
-     fit-margin-top="5"
-     fit-margin-left="5"
-     fit-margin-right="5"
-     fit-margin-bottom="5">
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
     <sodipodi:guide
-       position="101.92427,246.60504"
+       position="101.89884,246.60126"
        orientation="1,0"
        id="guide15299" />
+    <sodipodi:guide
+       position="289.60145,249.67985"
+       orientation="1,0"
+       id="guide12480" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -118,11 +122,11 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(3.0943792,-8.212039)">
+     transform="translate(3.0689452,-8.2067661)">
     <rect
        style="fill:#ffffff;stroke:#f2f2f2;stroke-width:1;stroke-linecap:round;stroke-linejoin:round"
        id="rect14497"
-       width="211.80075"
+       width="294.09604"
        height="282.81201"
        x="-2.5689452"
        y="8.7067661" />
@@ -257,20 +261,20 @@
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect32279"
-       width="201.8316"
-       height="28.62689"
+       width="284.12689"
+       height="28.626888"
        x="2.4056208"
        y="13.712039" />
     <text
        xml:space="preserve"
        style="font-size:10.5833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';stroke-width:0.264583"
-       x="63.143127"
+       x="104.29077"
        y="30.663557"
        id="text33955"><tspan
          sodipodi:role="line"
          id="tspan33953"
          style="stroke-width:0.264583"
-         x="63.143127"
+         x="104.29077"
          y="30.663557">Operating System</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
@@ -324,8 +328,8 @@
     <rect
        style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect973"
-       width="201.8316"
-       height="28.62689"
+       width="284.12689"
+       height="28.626892"
        x="2.4056208"
        y="257.89566" />
     <path
@@ -341,13 +345,83 @@
     <text
        xml:space="preserve"
        style="font-size:10.5833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';text-align:center;text-anchor:middle;stroke-width:0.264583"
-       x="102.90285"
+       x="144.05049"
        y="274.86786"
        id="text14125-4"><tspan
          sodipodi:role="line"
          style="text-align:center;text-anchor:middle;stroke-width:0.264583"
-         x="102.90285"
+         x="144.05049"
          y="274.86786"
          id="tspan14123-6">1 or more Smartknob(s)</tspan></text>
+    <g
+       id="g1261"
+       transform="translate(94.560018,52.158975)">
+      <circle
+         style="fill:none;stroke:#000000;stroke-width:0.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         id="circle1253"
+         cx="150.20103"
+         cy="78.077324"
+         r="26.36598" />
+      <text
+         xml:space="preserve"
+         style="font-size:10.5833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="150.06409"
+         y="75.147278"
+         id="text1259"><tspan
+           sodipodi:role="line"
+           id="tspan1255"
+           style="text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="150.06409"
+           y="75.147278">State</tspan><tspan
+           sodipodi:role="line"
+           style="text-align:center;text-anchor:middle;stroke-width:0.264583"
+           x="150.06409"
+           y="88.376404"
+           id="tspan1257">task</tspan></text>
+    </g>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
+       d="m 231.15974,43.221263 c -1.39384,20.122749 -0.85276,45.989248 -0.85276,62.900587"
+       id="path1263"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.40833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';stroke-width:0.264583"
+       x="-98.966454"
+       y="241.79742"
+       id="text1269"
+       transform="rotate(-90.529886)"><tspan
+         sodipodi:role="line"
+         id="tspan1265"
+         style="font-size:7.40833px;stroke-width:0.264583"
+         x="-98.966454"
+         y="241.79742">System info</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:7.40833px;stroke-width:0.264583"
+         x="-98.966454"
+         y="251.05783"
+         id="tspan8015">Current volume</tspan><tspan
+         sodipodi:role="line"
+         style="font-size:7.40833px;stroke-width:0.264583"
+         x="-98.966454"
+         y="260.31824"
+         id="tspan1267">...</tspan></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;marker-end:url(#Arrow2Mend)"
+       d="m 246.35116,157.89869 c -6.66699,38.8029 -107.45995,62.50085 -119.06394,65.57009"
+       id="path11670"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:7.40833px;line-height:1.25;font-family:'Calisto MT';-inkscape-font-specification:'Calisto MT';stroke-width:0.264583"
+       x="63.561901"
+       y="275.34076"
+       id="text11674"
+       transform="rotate(-26.487901)"><tspan
+         sodipodi:role="line"
+         id="tspan11672"
+         style="font-size:7.40833px;stroke-width:0.264583"
+         x="63.561901"
+         y="275.34076">Update current value</tspan></text>
   </g>
 </svg>
