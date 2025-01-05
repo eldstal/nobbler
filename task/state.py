@@ -69,20 +69,17 @@ def _proc_action_cmd(cmdline, action_name, queue):
     cmdline = cmdline.replace("{scripts}", NOBBLER_SCRIPTS_DIR)
     while True:
 
-        # TODO: Configurable polling rate
-        time.sleep(1)
-
         try:
             # TODO: Continuously read data from command output
             output = subprocess.check_output(cmdline, timeout=1, shell=True)
 
             if not output:
-                continue
+                raise Warning("No value")
 
             value = _get_value_from_output(output.decode())
 
             if not value:
-                continue
+                raise Warning("No value")
 
             # Send the value back to the mother thread
             queue.put({
@@ -98,6 +95,9 @@ def _proc_action_cmd(cmdline, action_name, queue):
 
         except:
             pass
+        
+        # TODO: Configurable polling rate
+        time.sleep(1)
 
 
 def get_value_for_action(action_name, range_min, range_max, allow_delay=False):
