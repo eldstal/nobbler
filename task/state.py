@@ -19,13 +19,16 @@
 # as output. That way, if you don't want polling you can create
 # a get_command which is event-driven.
 
-import command
-import subprocess
 import time
+import subprocess
 import multiprocessing
 import threading
 import re
+import io
+import os
+import psutil
 
+import command
 from task.action import NOBBLER_SCRIPTS_DIR
 
 _ALL_ACTIONS = {}
@@ -61,11 +64,74 @@ def _get_value_from_output(output):
 
 
 
+
+#
+# Body of a multiprocessing.process which runs a command,
+# reads continuous output and feeds the result back
+#
+def _proc_action_cmd_persistent(cmdline, action_name, data_queue, quit_queue):
+    cmdline = cmdline.replace("{scripts}", NOBBLER_SCRIPTS_DIR)
+
+    while True:
+        
+        # Run the command and take all the output we can from it
+        # If it exits (that's fine), we'll just treat it as a polling
+        # command and try again after a short delay.
+
+        #print(f"Invoking system command {cmdline}")
+        child = subprocess.Popen(cmdline, shell=True, stdout=subprocess.PIPE, text=True, universal_newlines=True, bufsize=-1)
+
+        while True:
+
+            # Wait for more output
+            # I'd love to use select.select() here, but I can't get it
+            # to work with a pipe on Windows. Too bad.
+            #print("Checking for output...")
+            output_line = child.stdout.readline()
+
+            #print("Output: ", output_line)
+            
+            # TODO: Read as many as we can without blocking
+            # If we've received multiple lines of output
+            # with data, we will just skip forward to the
+            # most recent valid one.
+
+            value = _get_value_from_output(output_line)
+
+            if value:
+                data_queue.put({
+                    "cmd": "value",
+                    "action": action_name,
+                    "value": value
+                })
+
+
+            try:
+                _ = quit_queue.get(block=False)
+                child.terminate()
+                return
+            except:
+                # No command to exit just yet
+                pass
+
+            # If the process has terminated, stop reading
+            if child.poll() is not None:
+                break
+
+
+        # TODO: Configurable polling delay
+        #print("Process terminated. Starting over.")
+        child.terminate()
+        time.sleep(1.0)
+
+        
+
+
 #
 # Body of a multiprocessing.process which continously
 # runs a command and feeds the result back
 #
-def _proc_action_cmd(cmdline, action_name, queue):
+def _proc_action_cmd_poll(cmdline, action_name, queue):
     cmdline = cmdline.replace("{scripts}", NOBBLER_SCRIPTS_DIR)
     while True:
 
@@ -144,9 +210,16 @@ def get_value_for_action(action_name, range_min, range_max, allow_delay=False):
     else:
         clean_value = _clamp(raw_value, range_min, range_max)
 
+    print(f"Found value for {action_name}: {clean_value}")
 
     return clean_value
 
+def _kill_children(proc):
+    if not proc.pid: return
+
+    parent = psutil.Process(proc.pid)
+    for child in parent.children(recursive=True):
+        child.kill()
 
 
 def main(app_config):
@@ -162,19 +235,20 @@ def main(app_config):
 
         if not cmdline: continue
 
-        process = multiprocessing.Process(target=_proc_action_cmd, args=(cmdline, action_name, command.Q_STATE))
+        quit_queue = multiprocessing.Queue()
+        process = multiprocessing.Process(target=_proc_action_cmd_persistent, args=(cmdline, action_name, command.Q_STATE, quit_queue))
         process.start()
-        processes.append(process)
+        processes.append((process, quit_queue))
 
 
     while True:
         cmd = command.Q_STATE.get()
 
         if cmd is None:
-            print("Terminating action task.")
+            print("Terminating state task.")
             break
 
-        print(cmd)
+        #print(cmd)
 
         # We've received an updated value from a background process
         if cmd["cmd"] == "value":
@@ -183,5 +257,7 @@ def main(app_config):
 
 
 
-    for p in processes:
-        p.terminate()
+    for proc,quit_queue in processes:
+        quit_queue.put(True)
+        _kill_children(proc)
+        proc.join()

@@ -203,7 +203,7 @@ def apply_knob_view(knob_id, new_view):
   # to set the initial value for the view. Just you watch!
   knob_action = new_view.get("knob_action", None)
   if knob_action:
-    dynamic_initial = command.action_get_value(knob_action, pos_min, pos_max)
+    dynamic_initial = command.action_get_value(knob_action, pos_min, pos_max, allow_delay=True)
     if dynamic_initial: initial_pos = dynamic_initial
 
   config = smartknob_pb2.SmartKnobConfig()

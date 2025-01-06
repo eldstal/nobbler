@@ -36,7 +36,7 @@ def _run_cmd_get_output(cmdline):
   cmdline = cmdline.replace("{scripts}", NOBBLER_SCRIPTS_DIR)
 
   try:
-    print("Invoking system command:  " + cmdline)
+    #print("Invoking system command:  " + cmdline)
     output = subprocess.check_output(cmdline, timeout=1, shell=True)
     return output.decode()
   
@@ -152,12 +152,3 @@ def main(app_config):
 
       _perform_action(cmd["knob_id"], actions[cmd["action"]], cmd)
 
-    elif cmd["cmd"] == "get_action_value":
-      # Run a getter command to find the current value.
-      # this will be set on the knob so that the knob display corresponds with reality
-
-      callback = cmd["callback"]
-      action = actions.get(cmd["action"], None)
-      output = _get_action_value(action, cmd["min"], cmd["max"])
-
-      callback(output)

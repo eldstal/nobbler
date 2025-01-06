@@ -119,7 +119,7 @@ def default_config():
       },
 
       { "name": "system_volume", "scaling": [0,100], "round": True,
-        "get_command": "python {scripts}/winvolume.py get",
+        "get_command": "python {scripts}/winvolume.py watch",
         "steps": [
             { "kind": "command", "command": "python {scripts}/winvolume.py set {value}" }
         ]

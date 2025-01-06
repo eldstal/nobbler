@@ -1,8 +1,10 @@
 import math
 import argparse
+import queue
+import sys
 
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+from comtypes import CLSCTX_ALL, COMObject
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume, IAudioEndpointVolumeCallback
 
 def win_get_control():
     devices = AudioUtilities.GetSpeakers()
@@ -49,8 +51,51 @@ def win_set_vol(percentage):
 
     control.SetMasterVolumeLevel(level, None)
 
+
+def win_watch_vol():
+    control = win_get_control()
+    que = queue.Queue()
+    callback = VolumeCallback(que)
+    control.RegisterControlChangeNotify(callback)
+
+    # A fully blocking loop would work great,
+    # but that swallows ctrl+c, so we can never quit.
+    vol = -1
+    while True:
+        new_vol = win_get_vol()
+
+        if new_vol != vol:
+            print(new_vol)
+            sys.stdout.flush()
+            vol = new_vol
+
+
+        try:
+            que.get(timeout=0.5)
+        except queue.Empty:
+            continue
+
+
+
+class VolumeCallback(COMObject):
+    _com_interfaces_ = [IAudioEndpointVolumeCallback]
+
+    def __init__(self, que):
+        self.que = que
+
+    def OnNotify(self, pNotify):
+        # Be careful in here.
+        # Exceptions aren't propagated,
+        # so this function will just fail silently.
+        self.que.put(True)
+
+
+
+
 parser = argparse.ArgumentParser("Control system volume")
 commands = parser.add_subparsers(dest="command", help="Command")
+
+watch_parser = commands.add_parser("watch", help="Continuously watch volume. Output only when volume changes.")
 
 get_parser = commands.add_parser("get", help="Get system volume (0-100)")
 
@@ -64,6 +109,8 @@ conf = parser.parse_args()
 
 if conf.command == "get":
     print(win_get_vol())
+elif conf.command == "watch":
+    win_watch_vol()
 elif conf.command == "set":
     win_set_vol(conf.percentage[0])
 elif conf.command == "change":
