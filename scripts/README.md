@@ -15,12 +15,13 @@ If you've got a venv or pipx environment for Nobbler, install them in that envir
 
 ### winvolume.py
 
-Reads and controls Windows system volume via `pycaw`.
+Reads and controls Windows system volume via `pycaw`. The `watch` mode outputs a percentage only when volume changes, so it's useful for passive monitoring.
 
 ```
-volume.py get
-volume.py set <percentage>
-volume.py change +percent
-volume.py change -percent
+winvolume.py get
+winvolume.py watch
+winvolume.py set <percentage>
+winvolume.py change +percent
+winvolume.py change -percent
 ```
 
